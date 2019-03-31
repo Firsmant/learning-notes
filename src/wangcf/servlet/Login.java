@@ -1,16 +1,16 @@
 package wangcf.servlet;
 
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.apache.commons.dbutils.QueryRunner;
-import wangcf.util.JDBCUtil;
+import org.apache.commons.dbutils.handlers.BeanHandler;
+import wangcf.bean.User;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
@@ -21,23 +21,29 @@ public class Login extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.addHeader("Content-Type", "text/html;charset=UTF-8");
+        //自动登录值
+        String AUTO_LOGIN = "yes";
 
         String userid = req.getParameter("userid");
         String password = req.getParameter("password");
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        conn = JDBCUtil.getConnection();
+        String autoLogin = req.getParameter("autoLogin");
+        //DBUtiles和C3P0结合使用
+        QueryRunner qr = new QueryRunner(new ComboPooledDataSource());
         String sql = "select * from sys_user where userid = ? and password = ? ";
         try {
-            ps = conn.prepareStatement(sql);
-            ps.setString(1, userid);
-            ps.setString(2, password);
-            rs = ps.executeQuery();
-            //登录成功，设置session，并且跳转到首页
-            if (rs.next()) {
-                req.getSession().setAttribute("username", rs.getString("username"));
+            User userInfo = qr.query(sql, new BeanHandler<User>(User.class), userid, password);
+
+            if (userInfo != null) {
+                //如果选择自动登录，需要记住cookie 60*60*27*7
+                //在下次访问其他页面的时候，直接使用cookie中保存的账号密码登录
+                if (AUTO_LOGIN.equals(autoLogin)) {
+                    Cookie cookie = new Cookie("autoLogin", userInfo.getUserid() + "#" + userInfo.getPassword());
+                    cookie.setMaxAge(60 * 60 * 24 * 7);
+                    cookie.setPath("/login");
+                    resp.addCookie(cookie);
+                }
+                //登录成功，设置session并且跳转到首页
+                req.getSession().setAttribute("userInfo", userInfo);
                 //重定向方式
                 resp.sendRedirect("index.jsp");
             } else {
