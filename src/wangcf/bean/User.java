@@ -6,7 +6,9 @@ package wangcf.bean;
  */
 public class User {
     private int userid;
-    private String usernam;
+
+
+    private String username;
     private String password;
 
     public int getUserid() {
@@ -17,12 +19,12 @@ public class User {
         this.userid = userid;
     }
 
-    public String getUsernam() {
-        return usernam;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUsernam(String usernam) {
-        this.usernam = usernam;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {

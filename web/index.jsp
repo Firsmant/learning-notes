@@ -11,7 +11,7 @@
 <%
     Object userInfo = (User)session.getAttribute("userInfo");
     if (userInfo != null) {
-        out.write("欢迎您：" + ((User) userInfo).getUsernam());
+        out.write("欢迎您：" + ((User) userInfo).getUsername());
     } else {
         out.append("<a href=\"login.jsp\">请登录</a>");
     }

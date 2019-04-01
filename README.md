@@ -23,6 +23,8 @@
 这两个包；如果是在java应用程序中，不会有任何问题。
 但是在java web程序中会报错
 
+
+
 ```
 严重: ContainerBase.addChild: start: 
 org.apache.catalina.LifecycleException: Failed to start component [StandardEngine[Catalina].StandardHost[localhost].StandardContext[/reward]]
@@ -44,5 +46,19 @@ Caused by: java.lang.NoClassDefFoundError: org/apache/commons/dbutils/ResultSetH
 java.sql.SQLException: No suitable driver
 ```
 
-通过`信息`可以看出来是没有使用c3p0-config.xml文件；这在java 应用程序中是没有问题的；
+通过`信息`可以看出来是没有使用c3p0-config.xml文件；这在java应用程序中是没有问题的；
+
+...
+
+经过一系列的尝试，(包括将`c3p0-0.9.1.2.jar`被放到`C:\Program Files\Java\jdk1.8.0_201\jre\lib\ext`的文件夹中)最后引发了问题,然后将mysql的jar放进去，移除都没有响应，在java应用程序中也不能正常运行了
+
+```
+java.lang.ClassNotFoundException: com.mysql.jdbc.Driver
+```
+
+然后将`c3p0-0.9.1.2.jar`从java的lib中移除，保证了在java程序中的正常运行
+
+最后用eclipse运行了该项目，没有出现问题
+
+再次重新部署到idea中，将依赖包加入项目的方式可能做了修改，然后就成功运行了
  
