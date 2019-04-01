@@ -1,39 +1,68 @@
-# reward-order
+# 文档说明
 
-#### 介绍
-项目名称：悬赏令
-该系统用来练习学到的各种基础，并且创建不同的分支
-不仅学习更能实现一个有意思的世界
+该项目实现了用户登录；用户个人的悬赏发布、查看、修改、删除；
 
-#### 软件架构
-软件架构说明
+## 1.1自动登录
+
+### 1.1.1实现功能
 
 
-#### 安装教程
+ ![流程](img/流程.jpg)
+ 
+### 练习内容
 
-1. xxxx
-2. xxxx
-3. xxxx
+1. 数据库连接池`C3P0`
+2. `DBUtiles`,对CRUD封装,原生JDBC返回`ResultSet`,需要自定义转换方案；使用DBUtiles可以很容易地得到实体类对象
+3. 使用Filter实现自动登录，同时使用到了cookie和session
 
-#### 使用说明
+## BUG
 
-1. xxxx
-2. xxxx
-3. xxxx
+### 问题0：
 
-#### 参与贡献
-
-1. Fork 本仓库
-2. 新建 Feat_xxx 分支
-3. 提交代码
-4. 新建 Pull Request
+`java.lang.ClassNotFoundException: com.mysql.jdbc.Driver`
+在java程序中，直接导入连接mysql的jar包即可； 但是在java web项目中，需要将mysql的jar放到Tomcat的包lib文件夹下，否则找不到；
 
 
-#### 码云特技
+### 问题1：
 
-1. 使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2. 码云官方博客 [blog.gitee.com](https://blog.gitee.com)
-3. 你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解码云上的优秀开源项目
-4. [GVP](https://gitee.com/gvp) 全称是码云最有价值开源项目，是码云综合评定出的优秀开源项目
-5. 码云官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6. 码云封面人物是一档用来展示码云会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+新引入了`c3p0-0.9.1.2.jar`和`commons-dbutils-1.4.jar`
+这两个包；如果是在java应用程序中，不会有任何问题。
+但是在java web程序中会报错
+
+```
+严重: ContainerBase.addChild: start: 
+org.apache.catalina.LifecycleException: Failed to start component [StandardEngine[Catalina].StandardHost[localhost].StandardContext[/reward]]
+
+Caused by: java.lang.NoClassDefFoundError: org/apache/commons/dbutils/ResultSetHandler
+
+```
+
+解决方案:将用到的`c3p0-0.9.1.2.jar``lib/commons-dbutils-1.4.jar`两个包都放到了Tomcat的lib文件下
+可能是因为这两个包需要和`mysql-connector-java-5.1.7-bin.jar`放到一起
+
+### 问题2
+
+ 解决了问题1 的BUG 然后又出现另外一个问题
+ 
+```
+信息: Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, dataSourceName -> 1hge0yua11moifbq5f536r|d714de5, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> null, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, identityToken -> 1hge0yua11moifbq5f536r|d714de5, idleConnectionTestPeriod -> 0, initialPoolSize -> 3, jdbcUrl -> null, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 0, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 15, maxStatements -> 0, maxStatementsPerConnection -> 0, minPoolSize -> 3, numHelperThreads -> 3, numThreadsAwaitingCheckoutDefaultUser -> 0, preferredTestQuery -> null, properties -> {}, propertyCycle -> 0, testConnectionOnCheckin -> false, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, usesTraditionalReflectiveProxies -> false ]
+
+
+警告: com.mchange.v2.resourcepool.BasicResourcePool$AcquireTask@7ab19cee -- Acquisition Attempt Failed!!! Clearing pending acquires. While trying to acquire a needed new resource, we failed to succeed more than the maximum number of allowed acquisition attempts (30). Last acquisition attempt exception: 
+java.sql.SQLException: No suitable driver
+```
+
+通过`信息`可以看出来是没有使用c3p0-config.xml文件；这在java应用程序中是没有问题的；
+
+...
+
+经过一系列的尝试，(包括将`c3p0-0.9.1.2.jar`被放到`C:\Program Files\Java\jdk1.8.0_201\jre\lib\ext`的文件夹中)最后引发了问题,然后将mysql的jar放进去，移除都没有响应，在java应用程序中也不能正常运行了
+
+```
+java.lang.ClassNotFoundException: com.mysql.jdbc.Driver
+```
+
+然后将`c3p0-0.9.1.2.jar`从java的lib中移除，保证了在java程序中的正常运行
+
+最后用eclipse运行了该项目，没有出现问题
+ 
