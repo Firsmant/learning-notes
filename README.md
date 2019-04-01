@@ -62,3 +62,18 @@ java.lang.ClassNotFoundException: com.mysql.jdbc.Driver
 
 再次重新部署到idea中，将依赖包加入项目的方式可能做了修改，然后就成功运行了
  
+ ## lib配置
+ 
+ 这个是网上讲的另一种在idea中创建web项目的方式，可以参考其中的配置lib的方式
+ 
+ http://www.cnblogs.com/shindo/p/7272646.html
+ 
+ 放几张配置Libraries的图：
+ 
+ ![Artifacts](img/Artifacts.png)
+ 
+ ![Facets](img/Facets.png)
+ 
+ ![Libraries](img/Libraries.png)
+ 
+ ![Modules](img/Modules.png)
