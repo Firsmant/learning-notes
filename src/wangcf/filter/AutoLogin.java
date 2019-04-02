@@ -20,17 +20,6 @@ import java.sql.SQLException;
 public class AutoLogin implements Filter {
 
     /**
-     * AutoLogin Filter的自动登录功能，只在进入首页时有效
-     * 检查session是否存在，确认其是否登录
-     * 若未登录再判断cookie中是否有autoLogin属性
-     * 然后用autoLogin中的账号密码尝试登录
-     * 登录成功则设置用户信息的session
-     * 登录成功与否都会进入相应的页面
-     * <p>
-     * 另外需要新增一个 Filter的功能，拦截请求
-     * 进入与个人相关的页面时，需要先判断session，确定其是否登录
-     * 未登录，则先跳转到 登录页面
-     * 已登录，才可以进入相应页面
      *
      * @param servletRequest
      * @param servletResponse

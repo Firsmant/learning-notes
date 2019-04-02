@@ -1,6 +1,15 @@
 # 文档说明
 
-该项目实现了用户登录；用户个人的悬赏发布、查看、修改、删除；
+该项目使用了C3P0连接数据库,可以创建连接池
+
+使用DBUtiles来处理CRUD，只需将C3P0创建的ComboPooledDataSource (实现DataSourse接口)
+
+实现了自动登录功能
+
+```
+QueryRunner qr = new QueryRunner(new ComboPooledDataSource());
+```
+
 
 ## 1.1自动登录
 
@@ -9,13 +18,55 @@
 
  ![流程](img/流程.jpg)
  
+ autoLogin filter说明：
+ 
+- 在登录页面可以选择自动登录的CheckBox
+- autoLogin Filter的自动登录功能，只在进入首页时有效
+- 检查session是否存在，确认其是否登录
+- 若未登录再判断cookie中是否有autoLogin属性
+- 然后用autoLogin中的账号密码尝试登录
+- 登录成功则设置用户信息的session
+- 登录成功与否都会进入相应的页面
+
+login servlet说明：
+
+- 根据账号密码查询数据库，确认是否登录成功
+- 成功后将userInfo存入session，否则返回登录页
+- 如果选择自动登录，那么将账号密码存到cookie中（明文存储，有安全问题）
+
+
+其它filter说明：
+- 另外需要新增一个 Filter的功能，拦截请求
+- 进入与个人相关的页面时，需要先判断session，确定其是否登录
+- 未登录，则先跳转到 登录页面
+- 已登录，才可以进入相应页面
+ 
 ### 练习内容
 
 1. 数据库连接池`C3P0`
 2. `DBUtiles`,对CRUD封装,原生JDBC返回`ResultSet`,需要自定义转换方案；使用DBUtiles可以很容易地得到实体类对象
 3. 使用Filter实现自动登录，同时使用到了cookie和session
+4. cookie.setPath("/login");限制的方法使用场景需了解；
+
+```
+Cookie cookie = new Cookie("autoLogin", userInfo.getUserid() + "#" + userInfo.getPassword());
+cookie.setMaxAge(60 * 60 * 24 * 7);
+//cookie.setPath("/login");
+resp.addCookie(cookie);
+```
+
 
 ## BUG
+
+### 问题0：
+
+`java.lang.ClassNotFoundException: com.mysql.jdbc.Driver`
+ 在java程序中，直接导入连接mysql的jar包即可； 但是在java web项目中，需要将mysql的jar放到Tomcat的包lib文件夹下，否则找不到
+ 
+ 放置到tomcat中确实解决了问题，但是放在lib中以正确的方式添加到项目中即可；
+ 
+ 说明是将第三方包添加到项目的方式有问题
+
 
 ### 问题1：
 
@@ -61,6 +112,8 @@ java.lang.ClassNotFoundException: com.mysql.jdbc.Driver
 最后用eclipse运行了该项目，没有出现问题
 
 再次重新部署到idea中，将依赖包加入项目的方式可能做了修改，然后就成功运行了
+
+结论：第三方jar包加入项目中的方式要正确
  
  ## lib配置
  

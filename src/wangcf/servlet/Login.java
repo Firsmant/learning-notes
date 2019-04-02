@@ -39,7 +39,7 @@ public class Login extends HttpServlet {
                 if (AUTO_LOGIN.equals(autoLogin)) {
                     Cookie cookie = new Cookie("autoLogin", userInfo.getUserid() + "#" + userInfo.getPassword());
                     cookie.setMaxAge(60 * 60 * 24 * 7);
-                    cookie.setPath("/login");
+                    //cookie.setPath("/login");
                     resp.addCookie(cookie);
                 }
                 //登录成功，设置session并且跳转到首页
