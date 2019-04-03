@@ -12,6 +12,7 @@
     Object userInfo = (User)session.getAttribute("userInfo");
     if (userInfo != null) {
         out.write("欢迎您：" + ((User) userInfo).getUsername());
+        out.append("<a href=\"logout\">退出</a>");
     } else {
         out.append("<a href=\"login.jsp\">请登录</a>");
     }

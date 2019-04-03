@@ -48,10 +48,18 @@ login servlet说明：
 3. 使用Filter实现自动登录，同时使用到了cookie和session
 4. cookie.setPath("/login");限制的方法使用场景需了解；
 
+>cookie是由服务器命令浏览器创建，并且保存在浏览器中的。
+浏览器创建cookie以后访问url的时候，会决定是否带cookie，因为以下方式设置了匹配url的规则：
+cookie默认的路径是产生cookie的路径`/reward`，可以在当前应用程序中共享，因为当前应用的路径都是在`/reward`下；
+设置`cookie.setPath("/")`可以使cookie在同一应用服务器中共享；
+设置`cookie.setPath("/other")`则只能在同一个服务器下的other应用中共享；
+跨域共享`cookie.setDomain(".xxx.com")`必须以`.`开头
+设置`cookie.setPath("/reward/index.jsp");`，可以在url为`http://localhost:8080/reward/register.jsp`带上cookie,不能只设置`/register.jsp`
+
 ```
 Cookie cookie = new Cookie("autoLogin", userInfo.getUserid() + "#" + userInfo.getPassword());
 cookie.setMaxAge(60 * 60 * 24 * 7);
-//cookie.setPath("/login");
+cookie.setPath("/reward/index.jsp");
 resp.addCookie(cookie);
 ```
 
