@@ -1,4 +1,4 @@
-# 文档说明
+文档说明
 
 该项目使用了C3P0连接数据库,可以创建连接池
 
@@ -11,9 +11,9 @@ QueryRunner qr = new QueryRunner(new ComboPooledDataSource());
 ```
 
 
-## 1.1自动登录
+# 1 自动登录
 
-### 1.1.1实现功能
+## 1.1 实现功能
 
 
  ![流程](img/流程.jpg)
@@ -41,7 +41,7 @@ login servlet说明：
 - 未登录，则先跳转到 登录页面
 - 已登录，才可以进入相应页面
  
-### 练习内容
+## 1.2 练习内容
 
 1. 数据库连接池`C3P0`
 2. `DBUtiles`,对CRUD封装,原生JDBC返回`ResultSet`,需要自定义转换方案；使用DBUtiles可以很容易地得到实体类对象
@@ -64,9 +64,9 @@ resp.addCookie(cookie);
 ```
 
 
-## BUG
+## 1.3 BUG
 
-### 问题0：
+### 1.3.1 问题1：
 
 `java.lang.ClassNotFoundException: com.mysql.jdbc.Driver`
  在java程序中，直接导入连接mysql的jar包即可； 但是在java web项目中，需要将mysql的jar放到Tomcat的包lib文件夹下，否则找不到
@@ -76,7 +76,7 @@ resp.addCookie(cookie);
  说明是将第三方包添加到项目的方式有问题
 
 
-### 问题1：
+### 1.3.2 问题2：
 
 新引入了`c3p0-0.9.1.2.jar`和`commons-dbutils-1.4.jar`
 这两个包；如果是在java应用程序中，不会有任何问题。
@@ -95,7 +95,7 @@ Caused by: java.lang.NoClassDefFoundError: org/apache/commons/dbutils/ResultSetH
 解决方案:将用到的`c3p0-0.9.1.2.jar``lib/commons-dbutils-1.4.jar`两个包都放到了Tomcat的lib文件下
 可能是因为这两个包需要和`mysql-connector-java-5.1.7-bin.jar`放到一起
 
-### 问题2
+### 1.3.3 问题3：
  解决了问题1 的BUG 然后又出现另外一个问题
 ```
 信息: Initializing c3p0 pool... com.mchange.v2.c3p0.ComboPooledDataSource [ acquireIncrement -> 3, acquireRetryAttempts -> 30, acquireRetryDelay -> 1000, autoCommitOnClose -> false, automaticTestTable -> null, breakAfterAcquireFailure -> false, checkoutTimeout -> 0, connectionCustomizerClassName -> null, connectionTesterClassName -> com.mchange.v2.c3p0.impl.DefaultConnectionTester, dataSourceName -> 1hge0yua11moifbq5f536r|d714de5, debugUnreturnedConnectionStackTraces -> false, description -> null, driverClass -> null, factoryClassLocation -> null, forceIgnoreUnresolvedTransactions -> false, identityToken -> 1hge0yua11moifbq5f536r|d714de5, idleConnectionTestPeriod -> 0, initialPoolSize -> 3, jdbcUrl -> null, maxAdministrativeTaskTime -> 0, maxConnectionAge -> 0, maxIdleTime -> 0, maxIdleTimeExcessConnections -> 0, maxPoolSize -> 15, maxStatements -> 0, maxStatementsPerConnection -> 0, minPoolSize -> 3, numHelperThreads -> 3, numThreadsAwaitingCheckoutDefaultUser -> 0, preferredTestQuery -> null, properties -> {}, propertyCycle -> 0, testConnectionOnCheckin -> false, testConnectionOnCheckout -> false, unreturnedConnectionTimeout -> 0, usesTraditionalReflectiveProxies -> false ]
@@ -123,7 +123,7 @@ java.lang.ClassNotFoundException: com.mysql.jdbc.Driver
 
 结论：第三方jar包加入项目中的方式要正确
  
- ## lib配置
+## 1.4 lib配置
  
  这个是网上讲的另一种在idea中创建web项目的方式，可以参考其中的配置lib的方式
  
@@ -138,3 +138,21 @@ java.lang.ClassNotFoundException: com.mysql.jdbc.Driver
  ![Libraries](img/Libraries.png)
  
  ![Modules](img/Modules.png)
+
+# 2 mybatis的使用
+
+## 2.1 环境配置 
+
+ 使用mybatis实现悬赏模块的增删改查
+
+1. 下载mybatis包：
+ https://github.com/mybatis/mybatis-3/releases
+2. 将以下jar添加到项目中
+    - `mybatis-3.2.7.jar`mybatis的核心包;
+    - `lib文件夹下所有jar`mybatis的依赖包所在，也需要添加
+3. 创建实体类`mybatis.bean.RewardOrder`
+4. 创建sql映射文件，书写sql:`mybatis/bean/RewardOrder.xml`
+5. 创建config文件夹，添加配置文件
+    - mybatis默认使用log4j输出日志信息，配置文件为`log4j.properties`
+    - `config/SqlMapConfig.xml`,配置数据源和事务管理
+6. 使用:`mybatis.test.MyBatisTest.java`

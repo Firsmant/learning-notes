@@ -18,10 +18,10 @@ public class C3P0Test {
     public void C3P0Test() throws PropertyVetoException, SQLException {
         ComboPooledDataSource cpds = new ComboPooledDataSource();
         //可以将连接数据库信息配置到c3p0-config.xml
-        cpds.setDriverClass("com.mysql.jdbc.Driver");
-        cpds.setJdbcUrl("jdbc:mysql://localhost:3306/reward");
-        cpds.setUser("root");
-        cpds.setPassword("root");
+//        cpds.setDriverClass("com.mysql.jdbc.Driver");
+//        cpds.setJdbcUrl("jdbc:mysql://localhost:3306/reward");
+//        cpds.setUser("root");
+//        cpds.setPassword("root");
         Connection connection = cpds.getConnection();
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery("select * from sys_user");
