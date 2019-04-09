@@ -159,6 +159,16 @@ java.lang.ClassNotFoundException: com.mysql.jdbc.Driver
 5. 创建config文件夹，添加配置文件
     - mybatis默认使用log4j输出日志信息，配置文件为`log4j.properties`
     - `config/SqlMapConfig.xml`,配置数据源和事务管理
-6. 使用:`mybatis.test.MyBatisTest.java`
+6. 使用案例:`mybatis.test.MyBatisTest.java`
 
+## 2.2 知识点
 
+- `${}`拼接符和`#{}`占位符的区别
+- `selectOne`和`selectList`
+- `parameterType`和`resutlType`
+- mysql中的`insert into tablename() value/values`两种写法的区别
+- `SELECT uuid()`自动生成UUID;`SELECT LAST_INSERT_ID()`递增,（需要数据库字段设置自增？） `AFTER`和`BEFORE`的区别和使用场景
+- insert 和 update delete 需要配合 submit
+- delete table 和 delete from table
+- Mybatis解决jdbc编程的问题
+- mybatis与hibernate不同
