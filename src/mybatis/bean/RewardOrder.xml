@@ -9,4 +9,24 @@
         SELECT * FROM reward_order
     </select>
 
+    <select id="queryRewardOrderById" resultType="mybatis.bean.RewardOrder">
+        SELECT * FROM reward_order WHERE rewardId = ${value}
+    </select>
+
+    <insert id="saveRewardOrder" parameterType="mybatis.bean.RewardOrder">
+        <selectKey keyColumn="rewardId" keyProperty="rewardId" order="BEFORE"
+                   resultType="String">
+            SELECT uuid()
+        </selectKey>
+        INSERT INTO reward_order (rewardId,rewardName,rewardContent)
+          VALUES (#{rewardId},#{rewardName},#{rewardContent})
+    </insert>
+
+    <update id="updateRewardOrderById" parameterType="mybatis.bean.RewardOrder">
+        UPDATE reward_order SET rewardName = #{rewardName} WHERE rewardId = #{rewardId}
+    </update>
+
+    <delete id="deleteRewardOrderById" parameterType="String">
+        delete FROM reward_order where rewardId = #{rewardId}
+    </delete>
 </mapper>

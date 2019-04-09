@@ -141,6 +141,10 @@ java.lang.ClassNotFoundException: com.mysql.jdbc.Driver
 
 # 2 mybatis的使用
 
+参考文件
+- [笔记01](resource/mybatis/Mybatis_day01笔记.docx)
+- [笔记02](resource/mybatis/Mybatis_day02笔记.docx)
+
 ## 2.1 环境配置 
 
  使用mybatis实现悬赏模块的增删改查
@@ -156,3 +160,5 @@ java.lang.ClassNotFoundException: com.mysql.jdbc.Driver
     - mybatis默认使用log4j输出日志信息，配置文件为`log4j.properties`
     - `config/SqlMapConfig.xml`,配置数据源和事务管理
 6. 使用:`mybatis.test.MyBatisTest.java`
+
+
