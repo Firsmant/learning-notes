@@ -150,16 +150,17 @@ java.lang.ClassNotFoundException: com.mysql.jdbc.Driver
  使用mybatis实现悬赏模块的增删改查
 
 1. 下载mybatis包：
- https://github.com/mybatis/mybatis-3/releases
+    - 官网：https://github.com/mybatis/mybatis-3/releases
+    - 本地：[resource/mybatis/mybatis-3.2.7.zip](\resource\mybatis\mybatis-3.2.7.zip)
 2. 将以下jar添加到项目中
     - `mybatis-3.2.7.jar`mybatis的核心包;
     - `lib文件夹下所有jar`mybatis的依赖包所在，也需要添加
-3. 创建实体类`mybatis.bean.RewardOrder`
-4. 创建sql映射文件，书写sql:`mybatis/bean/RewardOrder.xml`
+3. 创建实体类[mybatis.bean.RewardOrder.java](src\mybatis\bean\RewardOrder.java)
+4. 创建sql映射文件，书写sql:[mybatis/bean/RewardOrder.xml](src/mybatis/bean/RewardOrder.xml)
 5. 创建config文件夹，添加配置文件
-    - mybatis默认使用log4j输出日志信息，配置文件为`log4j.properties`
-    - `config/SqlMapConfig.xml`,配置数据源和事务管理
-6. 使用案例:`mybatis.test.MyBatisTest.java`
+    - mybatis默认使用log4j输出日志信息，配置文件为[log4j.properties](src\log4j.properties)
+    - [mybatis/SqlMapConfig.xml](src\mybatis\SqlMapConfig.xml),配置数据源和事务管理
+6. 使用案例:[mybatis.test.MyBatisTest.java](src\mybatis\test\MyBatisTest.java)
 
 ## 2.2 知识点
 
@@ -172,3 +173,20 @@ java.lang.ClassNotFoundException: com.mysql.jdbc.Driver
 - delete table 和 delete from table
 - Mybatis解决jdbc编程的问题
 - mybatis与hibernate不同
+
+## 2.3 Dao开发模式
+
+需要知悉：SqlSession、SqlSessionFactoryBuilder、SqlSessionFactory的作用和使用范围；见`resource/mybatis/Mybatis_day01笔记.docx`
+
+### 2.3.1 原始Dao
+
+- 将与数据库相关的操作放到Dao包下
+- 编写Dao接口，[mybatis.dao.IRewardOrderDao.java](src\mybatis\dao\IRewardOrderDao.java)定义操作数据库的共用方法
+- 编写Dao接口的实现类[mybatis.dao.RewardOrderDaoImpl.java](src\mybatis\dao\RewardOrderDaoImpl.java)，完成数据库操作
+- 测试[mybatis.test.MyBatisTest](\src\mybatis\test\MyBatisTest.java)
+
+问题：
+- 重复代码：Dao接口的实现类中：`SqlSession sqlSession = sqlSessionFactory.openSession();`
+- 硬编码：
+
+### 2.3.2 Mapper动态代理
