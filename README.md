@@ -190,3 +190,42 @@ java.lang.ClassNotFoundException: com.mysql.jdbc.Driver
 - 硬编码：
 
 ### 2.3.2 Mapper动态代理
+
+动态代理可以省略对Dao接口的实现类的编写,只需要以下4部分即可
+
+- 实体类：[mybatis.bean.RewardOrder.java](\src\mybatis\bean\RewardOrder.java)
+- Dao接口，实现数据库操作：[mybatis.dao.IRewardOrderDao](src\mybatis\dao\IRewardOrderDao.java)
+- Mapper.xml编写SQL语句：[mybatis.bean.RewardOrder.xml](\src\mybatis\bean\RewardOrder.xml)
+- 测试类，相当于业务逻辑的实现：[mybatis.test.MyBatisMapperTest.java](\src\mybatis\test\MyBatisMapperTest.java)
+
+Mapper接口开发需要遵循以下规范：
+
+- Mapper.xml文件中的`namespace`与mapper接口的类路径相同。
+```XML
+<mapper namespace="mybatis.dao.IRewardOrderDao">
+```
+- Mapper.xml中定义的每个statement的`id`和Mapper接口方法名相同 
+```xml
+ <select id="queryRewardOrderList" resultMap="rewardOrder">
+```
+```java
+IRewardOrderDao rewardOrderDao = sqlSession.getMapper(IRewardOrderDao.class);
+List<RewardOrder> list = rewardOrderDao.queryRewardOrderList();
+```
+- Mapper.xml中定义的每个sql的`parameterType`的类型和Mapper接口方法的输入参数类型相同
+- Mapper.xml中定义的每个sql的`resultType`的类型和Mapper接口方法的输出参数类型相同
+
+## 2.4 SqlMapConfig.xml配置文件
+
+SqlMapConfig.xml配置文件节点顺序如下：
+- properties（属性）:可以将连接数据库的信息放到properties文件中
+- settings（全局配置参数）
+- typeAliases（类型别名）
+- typeHandlers（类型处理器）
+- objectFactory（对象工厂）
+- plugins（插件）
+- environments（环境集合属性对象）
+    - environment（环境子属性对象）
+    - transactionManager（事务管理）
+    - dataSource（数据源）
+- mappers（映射器）：有三种配置方式
