@@ -25,7 +25,7 @@ public class MyBatisTest {
         //1.创建sqlSessionFactoryBuilder
         SqlSessionFactoryBuilder sqlSessionFactoryBuilder = new SqlSessionFactoryBuilder();
         //2.加载mybatis 的 SqlMapConfig.xml 配置文件
-        InputStream inputStream = Resources.getResourceAsStream("config/SqlMapConfig.xml");
+        InputStream inputStream = Resources.getResourceAsStream("mybatis/SqlMapConfig.xml");
         //3.创建SqlSessionFactory对象
         sqlSessionFactory = sqlSessionFactoryBuilder.build(inputStream);
     }

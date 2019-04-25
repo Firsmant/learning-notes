@@ -229,3 +229,159 @@ SqlMapConfig.xml配置文件节点顺序如下：
     - transactionManager（事务管理）
     - dataSource（数据源）
 - mappers（映射器）：有三种配置方式
+
+## 2.5 输入映射和输出映射
+
+### 2.5.1 输入类型parameterType
+
+- 简单类型
+- 对象类型
+- 对象的属性是另一个对象
+
+### 2.5.2 输出类型resultType
+
+- 简单类型
+- 输出对象
+- 输出对象List
+- resultMap,将查询结果字段和对象属性进行映射
+
+## 2.6 动态SQL
+
+### 2.6.1 if标签
+
+注意字符串类型的数据需要要做不等于空字符串校验。
+
+```xml
+	WHERE 1=1
+	<if test="sex != null and sex != ''">
+		AND sex = #{sex}
+	</if>
+	<if test="username != null and username != ''">
+		AND username LIKE
+		'%${username}%'
+	</if>
+```
+
+### 2.6.2 where标签
+
+where标签可以自动添加where，同时处理sql语句中第一个and关键字
+
+```xml
+	<where>
+		<if test="sex != null">
+			AND sex = #{sex}
+		</if>
+		<if test="username != null and username != ''">
+			AND username LIKE
+			'%${username}%'
+		</if>
+	</where>
+```
+
+## 2.6.3 sql/include标签 Sql片段
+
+重用sql内容
+
+```xml
+<select id="queryUserByWhere" parameterType="user" resultType="user">
+	<!-- SELECT id, username, birthday, sex, address FROM `user` -->
+	<!-- 使用include标签加载sql片段；refid是sql片段id -->
+	SELECT <include refid="userFields" /> FROM `user`
+	<!-- where标签可以自动添加where关键字，同时处理sql语句中第一个and关键字 -->
+	<where>
+		<if test="sex != null">
+			AND sex = #{sex}
+		</if>
+		<if test="username != null and username != ''">
+			AND username LIKE
+			'%${username}%'
+		</if>
+	</where>
+</select>
+
+<!-- 声明sql片段 -->
+<sql id="userFields">
+	id, username, birthday, sex, address
+</sql>
+```
+
+## 2.6.4 foreach标签
+
+用于 in 语句
+
+```xml
+	SELECT * FROM `user`
+	<where>
+		<!-- foreach标签，进行遍历 -->
+		<!-- collection：遍历的集合，这里是QueryVo的ids属性 -->
+		<!-- item：遍历的项目，可以随便写，，但是和后面的#{}里面要一致 -->
+		<!-- open：在前面添加的sql片段 -->
+		<!-- close：在结尾处添加的sql片段 -->
+		<!-- separator：指定遍历的元素之间使用的分隔符 -->
+		<foreach collection="ids" item="item" open="id IN (" close=")"
+			separator=",">
+			#{item}
+		</foreach>
+	</where>
+```
+
+## 2.7 关联查询
+
+### 2.7.1 一对一
+
+resultType:可以使用requestType输出类型，对应一个类A；如果输出字段不在该类A中存在相应属性，可以在类A中添加，或者定义类B，继承类A，并且在类B中添加相应多余属性
+
+resultMap:使用association完成一对一
+
+```xml
+<resultMap type="order" id="orderUserResultMap">
+    <id property="id" column="id" />
+    <result property="userId" column="user_id" />
+    <association property="user" javaType="user">
+        <!-- id:声明主键，表示user_id是关联查询对象的唯一标识-->
+		<id property="id" column="user_id" />
+        <result property="username" column="username" />
+    </association>
+</resultMap>
+```
+
+### 2.7.2 一对多
+
+使用resultMap配置collection 属性，完成一对多;对user信息自动完成group，然后orders的list列表作为user的一个属性
+
+```xml
+<resultMap type="user" id="userOrderResultMap">
+	<id property="id" column="id" />
+	<result property="username" column="username" />
+	<!-- 配置一对多的关系 -->
+	<collection property="orders" javaType="list" ofType="order">
+		<!-- 配置主键，是关联Order的唯一标识 -->
+		<id property="id" column="oid" />
+		<result property="number" column="number" />
+	</collection>
+</resultMap>
+```
+
+## 2.8 mybatis和spring整合
+
+思路：
+
+1. 由spring管理数据库的连接信息、数据库连接池、事务
+2. 利用spring的核心控制反转，将SqlSessionFactory、SqlSession放到容器中
+
+### 2.8.1 jar包导入 
+
+需要的jar包 [mybatis与spring整合全部jar包(包括springmvc)](resource/mybatis/mybatis与spring整合全部jar包(包括springmvc).zip) ：
+
+spring、mybatis、[spring+mybatis](resource/mybatis/mybatis-spring-1.2.2.zip)、mysql数据库驱动、数据库连接池(dbcp)
+
+### 2.8.2 配置文件
+
+- [db.properties](\src\mybatis\mybatisSpringConfig\db.properties)：数据库连接信息
+- [SqlMapConfig.xml](\src\mybatis\mybatisSpringConfig\SqlMapConfig.xml)：mybatis核心配置
+- log4j.properties：mybatis日志输出
+- [applicationContext.xml](\src\mybatis\mybatisSpringConfig\applicationContext.xml)：spring核心配置，将数据库连接池，mybatis相关都注入到bean中
+
+
+
+
