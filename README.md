@@ -1,39 +1,61 @@
-# reward-order
+# 1. maven安装
 
-#### 介绍
-项目名称：悬赏令
-该系统用来练习学到的各种基础，并且创建不同的分支
-不仅学习更能实现一个有意思的世界
+- 要求当前系统以及配置了JAVA_HOME的环境变量，即java相关
+- maven下载咯，http://maven.apache.org/download.cgi， 下载.zip解压到无空格、无中文目录下
+- 配置maven的环境变量：M2_HOME maven的根目录(更新版本时只需要修改该环境变量即可)；path 中添加maven的bin目录
+- `mnv -v` 查看版本，验证是否配置成功
 
-#### 软件架构
-软件架构说明
+# 2 maven 的第一个项目
+
+maven 的目录结构要按照约定来哦;当然空目录可以不创建
+
+![maven约定的目录结构](img/01.jpg)
+
+## 2.1 clean
+
+清理已经编译的内容，直接删除target文件
+
+## 2.2 ompile
+
+编译主程序，会在根目录下生成 target文件
+
+>异常：`http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException`
+>需要注意，此时的错误，很有可能是因为 java代码编写有问题导致的
+
+## 2.3 test-compile
+
+编译测试程序
+
+## 2.4 package
+
+将项目打包成.jar文件放到target目录下
+
+## 1.2.5 install
+
+打包生成.jar或者.war，并且存放到仓库中
+
+## 1.2.6 deploy
+
+将最终的包发送到远程仓库，可以共享咯
+
+# 3 仓库
+
+默认仓库位置`C:\Users\Administrator.SC-201902181839\.m2\repository`
+
+在setting.xml文件中可以修改
+
+```xml
+<localRepository>D:\myMavenRepository</localRepository>
+```
+
+# 4 idea配置maven
 
 
-#### 安装教程
+---
+参考
 
-1. xxxx
-2. xxxx
-3. xxxx
+https://www.javazhiyin.com/36512.html
 
-#### 使用说明
+https://www.javazhiyin.com/19409.html
 
-1. xxxx
-2. xxxx
-3. xxxx
-
-#### 参与贡献
-
-1. Fork 本仓库
-2. 新建 Feat_xxx 分支
-3. 提交代码
-4. 新建 Pull Request
-
-
-#### 码云特技
-
-1. 使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2. 码云官方博客 [blog.gitee.com](https://blog.gitee.com)
-3. 你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解码云上的优秀开源项目
-4. [GVP](https://gitee.com/gvp) 全称是码云最有价值开源项目，是码云综合评定出的优秀开源项目
-5. 码云官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6. 码云封面人物是一档用来展示码云会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+https://www.javazhiyin.com/5070.html
