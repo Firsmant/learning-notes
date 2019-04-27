@@ -382,6 +382,48 @@ spring、mybatis、[spring+mybatis](resource/mybatis/mybatis-spring-1.2.2.zip)�
 - log4j.properties：mybatis日志输出
 - [applicationContext.xml](\src\mybatis\mybatisSpringConfig\applicationContext.xml)：spring核心配置，将数据库连接池，mybatis相关都注入到bean中
 
+### 2.8.3 原始Dao开发
 
+整合以后的imp实现类[mybatis.mybatisSpringConfig.RewardOrderDaoImpl](\src\mybatis\mybatisSpringConfig\RewardOrderDaoImpl.java)需要继承 `SqlSessionDaoSupport` 这样就由spring来管理SqlSession了
 
+[mybatis.test.MybatisSpringDaoTest](\src\mybatis\test\MybatisSpringDaoTest.java)
 
+使用spring后，将需要用到的对象都配置到bean中：applicationContext.xml
+
+程序执行时，先创建IOC容器
+
+```java
+this.context = new ClassPathXmlApplicationContext("classpath:mybatis/mybatisSpringConfig/applicationContext.xml");
+```
+
+需要使用容器中对象时，从bean容器中获取即可;而不是使用new的方式
+
+```java
+RewardOrderDao rewardOrderDao = this.context.getBean(RewardOrderDaoImpl.class);
+```
+
+### 2.8.4 Mapper开发
+
+mapper开发的特点是，可以省略Dao接口实现类imp的编写；通过代理，直接获取到实现该接口的类的对象；在使用spring时，这个对象需要在xml文件中配置
+
+两种方案对比：其实是通过两种方式，产生了相同的实现类
+
+```java
+IRewardOrderDao rewardOrderDao = (IRewardOrderDao) this.context.getBean("rewardOrderDaoImpl");
+IRewardOrderDao rewardOrderDao = (IRewardOrderDao) this.context.getBean("rewardOrderDaoImplMapper");
+```
+
+```xml
+<!--mybatis与spring整合  传统Dao开发-->
+<bean id="rewardOrderDaoImpl" class="mybatis.mybatisSpringConfig.RewardOrderDaoImpl">
+	<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+</bean>
+
+<!--mybatis与spring整合 动态代理Mapper对象，也就是Dao接口的实现类的对象-->
+<bean id="rewardOrderDaoImplMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	<!-- 配置Mapper接口 -->
+	<property name="mapperInterface" value="mybatis.dao.IRewardOrderDao" />
+	<!-- 配置sqlSessionFactory -->
+	<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+</bean>
+```
