@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace：命名空间，用于隔离sql -->
+<mapper namespace="mybatis.dao.IRewardOrderDao">
+    <resultMap id="rewardOrder" type="mybatis.bean.RewardOrder">
+        <result column="reward_id" property="rewardId"></result>
+        <result column="reward_name" property="rewardName"></result>
+        <result column="reward_content" property="rewardContent"></result>
+        <result column="reward_stage" property="rewardStage"></result>
+        <result column="create_user" property="createUser"></result>
+        <result column="create_time" property="createTime"></result>
+        <result column="update_user" property="updateUser"></result>
+        <result column="update_time" property="updateTime"></result>
+    </resultMap>
+    <select id="queryRewardOrderList" resultMap="rewardOrder">
+        SELECT
+          `reward_id`,
+          `reward_name`,
+          `reward_content`,
+          `reward_stage`,
+          `create_user`,
+          `create_time`,
+          `update_user`,
+          `update_time`
+        FROM
+          `reward`.`reward_order`
+    </select>
+
+    <select id="queryRewardOrderById" resultMap="rewardOrder">
+        SELECT * FROM reward_order WHERE reward_id = ${value}
+    </select>
+
+    <insert id="saveRewardOrder" parameterType="mybatis.bean.RewardOrder">
+        <selectKey keyColumn="rewardId" keyProperty="rewardId" order="BEFORE"
+                   resultType="String">
+            SELECT uuid()
+        </selectKey>
+        INSERT INTO reward_order (reward_id,reward_name,reward_content)
+        VALUES (#{rewardId},#{rewardName},#{rewardContent})
+    </insert>
+
+    <update id="updateRewardOrderById" parameterType="mybatis.bean.RewardOrder">
+        UPDATE reward_order SET reward_name = #{rewardName} WHERE reward_id = #{rewardId}
+    </update>
+
+    <delete id="deleteRewardOrderById" parameterType="String">
+        delete FROM reward_order where reward_id = #{rewardId}
+    </delete>
+</mapper>
