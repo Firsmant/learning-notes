@@ -1,7 +1,13 @@
+package Topic;
+
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 import javax.jms.*;
 
+/**
+ * 发布/订阅消息
+ * 订阅者
+ */
 public class Consumer {
 
     public void getMessage() {
@@ -13,17 +19,18 @@ public class Consumer {
             // 启动连接
             connection.start();
             // 创建 session
-            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-            // 创建消息队列
-            Destination destination = session.createQueue("testHelloWorld");
+            Session session = connection.createSession(Boolean.TRUE, Session.AUTO_ACKNOWLEDGE);
+            // 创建目的地 Topic
+            Destination destination = session.createTopic("testTopicHelloWorld");
             // 创建消费者
-            MessageConsumer messageConsumer = session.createConsumer(destination);
+            MessageConsumer consumer = session.createConsumer(destination);
             TextMessage message = null;
             int num = 0;
             // 接收消息
             while (true) {
                 // 此处未接收到消息时会一直等待
-                message = (TextMessage) messageConsumer.receive();
+                message = (TextMessage) consumer.receive();
+                message.acknowledge();
                 System.out.print(num++ + ":");
                 // 输出消息
                 System.out.println(message.getText());

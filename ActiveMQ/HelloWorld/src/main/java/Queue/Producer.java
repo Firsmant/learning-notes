@@ -1,8 +1,13 @@
-import javafx.scene.effect.Light;
+package Queue;
+
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 import javax.jms.*;
 
+/**
+ * 点对点
+ * 消息生产者
+ */
 public class Producer {
 
     public void sendMessage(String content) {
@@ -13,17 +18,17 @@ public class Producer {
             // 启动连接
             connection.start();
             // 创建 session
-            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            Session session = connection.createSession(Boolean.FALSE, Session.DUPS_OK_ACKNOWLEDGE);
             // 创建队列
-            Destination destination = session.createQueue("testHelloWorld");
+            Destination destination = session.createQueue("testQueue");
             // 创建生产者
-            MessageProducer messageProducer = session.createProducer(destination);
+            MessageProducer producer = session.createProducer(destination);
             // 设置消息
             Message message = session.createTextMessage(content);
             // 发送消息
-            messageProducer.send(message);
+            producer.send(message);
             // 释放资源
-            messageProducer.close();
+            producer.close();
             session.close();
             connection.close();
 
@@ -33,6 +38,6 @@ public class Producer {
     }
 
     public static void main(String[] args) {
-        new Producer().sendMessage("Hello World");
+        new Producer().sendMessage("Hello World Queue");
     }
 }
